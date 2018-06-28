@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/et_search"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Search Github Username"
+        android:background="@null"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/tv_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:textColor="#212121"
+        android:layout_toEndOf="@id/et_search"
+        android:layout_alignBaseline="@id/et_search"
+        android:gravity="right"/>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Project List:"
+        android:paddingLeft="10dp"
+        android:paddingBottom="5dp"
+        android:layout_below="@id/et_search"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcy_project_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_tip"/>
+
+</RelativeLayout>

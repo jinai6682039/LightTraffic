@@ -1,0 +1,23 @@
+# A simple Android sample for MVVM
+
+![Alt text](./mvvm.png)
+
+MVVM的主要架构如上图，主要分为三层ViewModel层、Model层和View层。
+
+此体系的核心为ViewModel层，他负责将Model层和View层完全解耦，所以他就负责了与View层和View层的通讯工作。
+
+Model层：和MCV或者MVP体系类似，负责业务逻辑的处理，也就是网络请求。
+ViewModel层：整个体系的核心，既要负责去和Model层进行通信，调用业务逻辑处理。又要负责将业务逻辑的数据无感知的通知给View层。
+View层：也就是传统的Activity或者Fragment界面层。这里会订阅其ViewModel层中的数据变化，来进行界面的更新。
+
+在此Sample中，Model层采用的策略是使用Retrofit + Rx2JavaCallAdapterFactroy来为每个ServiceMothed来创建对应的ObServable对象。之后的ViewModel会创建自定义的Observer来订阅此ObServable对象。
+
+ViewModel层采用的策略是使用Rx2Java中的Observer接口来自定义请求处理的Observer类。在此类中我们将引入LiveData（这里为了方便处理请求的可能发生的情况，将LiveData封装成TypeLiveData）来作为请求处理之后的请求数据的Observable载体。之后的View层就会订阅此Observabel，在请求完成（或异常）后都会收到回调，这样就可以无感知的进行相应的界面更新处理。
+
+View层将通过ViewModelProviders来获取相应的ViewModel对象。然后初始化ViewModel对象中预定义的LiveData对象。这里会对这些LiveData对象进行对此Activity或者Fragment进行一个订阅操作，在onChange()方法中按照WrapLiveData对象中描述的Type来进行不同的View处理。之后在ViewModel订阅的Model处理完成后，调用对应LiveData.setValue()方法来通知订阅的View层数据发生变化，要进行相应的界面更新。
+
+
+## LiveData
+这里引入了一个之前为接触过的类-LiveData。此类是一个支持Observable的数据持有者。同时，此对象是与其订阅者的生命周期是想关联的，即在对应Activity的Started或者Resumed之后，其订阅者才会开始对此Observable开始监听。在订阅者Stoped后会自动停止监听，对应订阅者在Destroy后，也会自动移除对应的Observer。所有这里不会发生内存泄漏。
+
+同时，对于由于配置改变而进行recreate的Activity，其是共用之前的ViewModel。
