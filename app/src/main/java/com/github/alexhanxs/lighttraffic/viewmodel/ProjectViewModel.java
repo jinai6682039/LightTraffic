@@ -23,15 +23,19 @@ public class ProjectViewModel extends BaseViewModel {
     protected TypeLiveData<WrapLiveData<List<Project>>> projectListLiveData;
     protected TypeLiveData<WrapLiveData<Project>> projectLiveData;
 
+    protected Project preLoadedData;
+
+    public static ProjectViewModel mInstance = null;
+
     public ProjectViewModel() {
+            projectModel = new ProjectModel();
 
-        projectModel = new ProjectModel();
+            projectListLiveData = new TypeLiveData<>();
+            projectLiveData = new TypeLiveData<>();
 
-        projectListLiveData = new TypeLiveData<>();
-        projectLiveData = new TypeLiveData<>();
-
-        projectListObserver = new MainThreadObserver<>(projectListLiveData);
-        projectObserver = new MainThreadObserver<>(projectLiveData);
+            projectListObserver = new MainThreadObserver<>(projectListLiveData);
+            projectObserver = new MainThreadObserver<>(projectLiveData);
+            mInstance = this;
     }
 
     @Override
@@ -63,4 +67,11 @@ public class ProjectViewModel extends BaseViewModel {
         this.projectLiveData = projectLiveData;
     }
 
+    public Project getPreLoadedData() {
+        return preLoadedData;
+    }
+
+    public void setPreLoadedData(Project preLoadedData) {
+        this.preLoadedData = preLoadedData;
+    }
 }

@@ -78,6 +78,13 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModel> {
                         }
                     });
 
+            getmViewModel().getProjectLiveData().observe(this,
+                    new Observer<WrapLiveData<Project>>() {
+                        @Override
+                        public void onChanged(@Nullable WrapLiveData<Project> projectWrapLiveData) {
+                            postDetailLiveData(projectWrapLiveData);
+                        }
+                    });
         }
     }
 
@@ -87,11 +94,51 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModel> {
         }
     }
 
+    public void getPreProjectDetail(String userId, String projectId) {
+        if (getmViewModel() != null) {
+            getmViewModel().getProjectDetails(userId, projectId);
+        }
+    }
+
     public void postLiveData(WrapLiveData<List<Project>> listWrapLiveData) {
         switch (listWrapLiveData.type) {
             case TYPE_DATA_SUCCESS:
                 projectItemAdapter.addData(listWrapLiveData.data);
                 projectItemAdapter.notifyDataSetChanged();
+
+                Project project = listWrapLiveData.data.get(0);
+                getPreProjectDetail(TextUtils.isEmpty(et_search.getText().toString()) ? "Google"
+                        : et_search.getText().toString(), project.name);
+                break;
+
+            case TYPE_DATA_ERROR:
+                Toast.makeText(this,
+                        listWrapLiveData.requestException.getMessage(),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                break;
+
+            case TYPE_DATA_FINISH:
+
+                break;
+
+            case TYPE_DATA_LOADING:
+                if (listWrapLiveData.showLoading) {
+                    toShowProgressMsg("load data..");
+                } else {
+                    toCloseProgressMsg();
+                }
+                break;
+        }
+    }
+
+    public void postDetailLiveData(WrapLiveData<Project> listWrapLiveData) {
+        switch (listWrapLiveData.type) {
+            case TYPE_DATA_SUCCESS:
+                if (getmViewModel() != null) {
+                    getmViewModel().setPreLoadedData(listWrapLiveData.data);
+                    getmViewModel().getProjectLiveData().removeObservers(this);
+                }
                 break;
 
             case TYPE_DATA_ERROR:
@@ -128,11 +175,19 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModel> {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Project project = getItem(position);
+            final Project project = getItem(position);
 
             ((MyViewHolder) holder).name.setText(project.name);
             ((MyViewHolder) holder).languages.setText(project.language);
             ((MyViewHolder) holder).project_watchers.setText("Watchers count :" + project.watchers);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Main2Activity.toHere(MainActivity.this, TextUtils.isEmpty(et_search.getText().toString()) ? "Google"
+                            : et_search.getText().toString(), project.name);
+                }
+            });
         }
 
         @Override
