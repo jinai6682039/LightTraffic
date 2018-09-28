@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':livedata-processor', ':livedata-annotation'
