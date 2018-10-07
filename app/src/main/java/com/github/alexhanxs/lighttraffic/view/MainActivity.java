@@ -18,7 +18,7 @@ import com.github.alexhanxs.lighttraffic.R;
 import com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData;
 import com.github.alexhanxs.lighttraffic.model.entity.Project;
 import com.github.alexhanxs.lighttraffic.view.base.BaseMvvmActivity;
-import com.github.alexhanxs.lighttraffic.viewmodel.ProjectViewModel;
+import com.github.alexhanxs.lighttraffic.viewmodel.ProjectViewModelSouce;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_
 import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_DATA_LOADING;
 import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_DATA_SUCCESS;
 
-public class MainActivity extends BaseMvvmActivity<ProjectViewModel> {
+public class MainActivity extends BaseMvvmActivity<ProjectViewModelSouce> {
 
     EditText et_search;
     TextView tv_search;
@@ -64,8 +64,8 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModel> {
     }
 
     @Override
-    public Class<ProjectViewModel> getViewModelClass() {
-        return ProjectViewModel.class;
+    public Class<ProjectViewModelSouce> getViewModelClass() {
+        return ProjectViewModelSouce.class;
     }
 
     public void initLiveData() {

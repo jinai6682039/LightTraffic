@@ -1,7 +1,5 @@
 package com.github.jinai6682039.livedata_processor.binder;
 
-import com.github.jinai6682039.livedata_processor.util.ProcessorUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,7 @@ public class BindObserverParam {
     public String paramName;
     public String paramAnnotationName;
     public String paramTypeString;
+    public boolean isAnnotationed;
 
     /**
      * example: if {@link Builder#paramTypeString} is java.lang.String
@@ -42,6 +41,10 @@ public class BindObserverParam {
         this.paramRawType = builder.paramRawType;
         this.orderGenericsTypes = builder.orderGenericsTypes;
         this.isGenericsType = builder.isGenericsType;
+        this.isAnnotationed = builder.isAnnotationed;
+        if (this.paramAnnotationName == null) {
+            this.paramAnnotationName = paramName;
+        }
     }
 
     public static final class Builder {
@@ -49,7 +52,7 @@ public class BindObserverParam {
         private String paramName = "";
         private String paramAnnotationName = "";
         private String paramTypeString = "";
-
+        private boolean isAnnotationed = false;
         private boolean isGenericsType = false;
         private List<BindObserverParam> orderGenericsTypes = new ArrayList<>();
 
@@ -66,6 +69,11 @@ public class BindObserverParam {
         private String paramRawType = "";
 
         public Builder() {
+        }
+
+        public Builder setAnnotationed(boolean annotationed) {
+            isAnnotationed = annotationed;
+            return this;
         }
 
         public Builder setParamName(String paramName) {

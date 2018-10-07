@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Alexhanxs on 2018/6/27.
  */
 
-public class ProjectViewModel extends BaseViewModel {
+public class ProjectViewModelSouce extends BaseViewModel {
 
     protected ProjectModel projectModel;
 
@@ -25,9 +25,9 @@ public class ProjectViewModel extends BaseViewModel {
 
     protected Project preLoadedData;
 
-    public static ProjectViewModel mInstance = null;
+    public static ProjectViewModelSouce mInstance = null;
 
-    public ProjectViewModel() {
+    public ProjectViewModelSouce() {
             projectModel = new ProjectModel();
 
             projectListLiveData = new TypeLiveData<>();

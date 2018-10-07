@@ -30,11 +30,13 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+
+import static com.google.auto.common.MoreElements.getPackage;
 
 @AutoService(Processor.class)
 public class LightTrafficProcessor extends AbstractProcessor {
@@ -48,16 +50,6 @@ public class LightTrafficProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         findParseClass(roundEnvironment);
-
-//        BinderSet binderSet = new BinderSet();
-//
-//        JavaFile javaFile = binderSet.generateJava(1);
-//
-//        try {
-//            javaFile.writeTo(mFiler);
-//        } catch (IOException e) {
-//            throw new WriteJavaFileFailureException("test", e.getMessage());
-//        }
         return false;
     }
 
@@ -104,24 +96,65 @@ public class LightTrafficProcessor extends AbstractProcessor {
 
     private void findParseClass(RoundEnvironment environment) {
 
-        for (Element element : environment.getElementsAnnotatedWith(ObserverMethod.class)) {
+        for (Element element : environment.getElementsAnnotatedWith(ObserverModel.class)) {
             if (!SuperficialValidation.validateElement(element)) {
                 continue;
             }
 
-            parseObserverMethod(ObserverMethod.class, element);
+            BinderSet.Builder modelBuild = new BinderSet.Builder();
+            modelBuild.setModelClassName(element.getSimpleName().toString());
+
+            String generateClassName = element.getAnnotation(ObserverModel.class).value();
+            if (generateClassName.equals("")) {
+                generateClassName = element
+                        .getSimpleName()
+                        .toString()
+                        .replace("Model", "ViewModel");
+            }
+            modelBuild.setGenerateClassName(generateClassName);
+            modelBuild.setPackageName(getPackage(element).getQualifiedName().toString());
+
+            for (Element method : element.getEnclosedElements()) {
+                if (!SuperficialValidation.validateElement(element)) {
+                    continue;
+                }
+
+                BindObserverMethod observerMethod = parseObserverMethod(ObserverMethod.class, method);
+                if (observerMethod != null) {
+                    modelBuild.addObserverMethod(observerMethod);
+                }
+            }
+
+            BinderSet modelSet = modelBuild.build();
+
+            try {
+                modelSet.generateJava().writeTo(mFiler);
+            } catch (IOException e) {
+                throw new WriteJavaFileFailureException("test", e.getMessage());
+            }
         }
     }
 
-    private void parseObserverMethod(Class<? extends Annotation> annotationClass, Element element) {
+    private BindObserverMethod parseObserverMethod(Class<? extends Annotation> annotationClass, Element element) {
+
+        Annotation annotation = element.getAnnotation(annotationClass);
+        if (annotation == null || annotation.annotationType() != annotationClass) {
+            return null;
+        }
+
         if (!(element instanceof ExecutableElement) || element.getKind() != ElementKind.METHOD) {
             throw new IllegalStateException(
                     String.format("@%s annotation must be on a method.", annotationClass.getSimpleName()));
         }
 
-        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
         ExecutableElement executableElement = (ExecutableElement) element;
-        Annotation annotation = element.getAnnotation(annotationClass);
+
+        BindObserverMethod.Builder builder = new BindObserverMethod.Builder();
+        builder.setMethodName(element.getSimpleName().toString());
+
+        for (Modifier modifier :element.getModifiers()) {
+            builder.addModify(modifier != null ? modifier.toString() : "");
+        }
 
         for (VariableElement p : executableElement.getParameters()) {
             String paramName = null;
@@ -152,12 +185,14 @@ public class LightTrafficProcessor extends AbstractProcessor {
             BindObserverParam param = new BindObserverParam.Builder()
                     .setParamName(paramName)
                     .setParamAnnotationName(paramAnnotationName)
+                    .setAnnotationed(p.getAnnotation(ObserverParam.class) != null)
                     .setParamTypeString(paramTypeString)
                     .decodeParamType().build();
 
-            BindObserverMethod method = new BindObserverMethod();
+            builder.addOrderObserverParams(param);
         }
 
+        return builder.build();
     }
 
 }

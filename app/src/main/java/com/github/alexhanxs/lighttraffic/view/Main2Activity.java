@@ -12,9 +12,7 @@ import com.github.alexhanxs.lighttraffic.R;
 import com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData;
 import com.github.alexhanxs.lighttraffic.model.entity.Project;
 import com.github.alexhanxs.lighttraffic.view.base.BaseMvvmActivity;
-import com.github.alexhanxs.lighttraffic.viewmodel.ProjectViewModel;
-
-import java.util.List;
+import com.github.alexhanxs.lighttraffic.viewmodel.ProjectViewModelSouce;
 
 import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_DATA_ERROR;
 import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_DATA_FINISH;
@@ -30,7 +28,7 @@ public class Main2Activity extends BaseMvvmActivity {
         context.startActivity(intent);
     }
 
-    public ProjectViewModel viewModel;
+    public ProjectViewModelSouce viewModel;
     private String userId;
     private String projectId;
 
@@ -48,11 +46,12 @@ public class Main2Activity extends BaseMvvmActivity {
             projectId = getIntent().getStringExtra("ProjectId");
         }
 
-        if (ProjectViewModel.mInstance != null) {
-            viewModel = ProjectViewModel.mInstance;
+        if (ProjectViewModelSouce.mInstance != null) {
+            viewModel = ProjectViewModelSouce.mInstance;
         } else {
-            viewModel = (ProjectViewModel) getmViewModel();
+            viewModel = (ProjectViewModelSouce) getmViewModel();
         }
+
 
         initLiveData();
 
@@ -65,7 +64,7 @@ public class Main2Activity extends BaseMvvmActivity {
 
     @Override
     public Class getViewModelClass() {
-        return ProjectViewModel.class;
+        return ProjectViewModelSouce.class;
     }
 
     private void initLiveData() {

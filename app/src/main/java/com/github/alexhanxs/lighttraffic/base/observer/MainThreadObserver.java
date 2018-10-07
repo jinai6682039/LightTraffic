@@ -8,6 +8,7 @@ import com.github.alexhanxs.lighttraffic.base.util.NetUtil;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -29,6 +30,8 @@ public class MainThreadObserver<T> implements Observer<T> {
     public Disposable disposable;
 
     private TypeLiveData<WrapLiveData<T>> dataTypeLiveData;
+
+    private HashMap<String, Object> requestParams = new HashMap<>();
 
     public MainThreadObserver(TypeLiveData<WrapLiveData<T>> dataTypeLiveData) {
         this.dataTypeLiveData = dataTypeLiveData;
@@ -89,5 +92,13 @@ public class MainThreadObserver<T> implements Observer<T> {
     @Override
     public void onComplete() {
 
+    }
+
+    public void addRquestParam(String key, Object value) {
+        requestParams.put(key, value);
+    }
+
+    public Object getRequestParam(String key) {
+        return requestParams.get(key);
     }
 }
