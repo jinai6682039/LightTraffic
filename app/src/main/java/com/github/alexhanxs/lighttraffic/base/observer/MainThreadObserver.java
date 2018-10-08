@@ -41,6 +41,8 @@ public class MainThreadObserver<T> implements Observer<T> {
     public void onSubscribe(Disposable d) {
         this.disposable = d;
 
+        dataTypeLiveData.setRequestParams(requestParams);
+
         if (NetUtil.isConnected()) {
             dataTypeLiveData.setValue(makeLoadingLiveData(LOADING));
 

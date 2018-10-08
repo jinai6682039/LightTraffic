@@ -2,6 +2,8 @@ package com.github.alexhanxs.lighttraffic.base.livedata;
 
 import com.github.alexhanxs.lighttraffic.base.exception.RequestException;
 
+import java.util.HashMap;
+
 /**
  * Created by Alexhanxs on 2018/6/27.
  */
@@ -21,6 +23,8 @@ public class WrapLiveData<T> {
     public final static boolean LOAD_FINISH_ERROR = false;
 
     public static WrapLiveData finishLiveData = new WrapLiveData(TYPE_DATA_FINISH);
+
+    private HashMap<String, Object> requestParams = new HashMap<>();
 
     public T data;
     public int type = 0;
@@ -62,4 +66,11 @@ public class WrapLiveData<T> {
         return new WrapLiveData(TYPE_DATA_FINISH, loadSuccess);
     }
 
+    public void setRequestParams(HashMap<String, Object> requestParams) {
+        this.requestParams = requestParams;
+    }
+
+    public Object getRequestParam(String key) {
+        return requestParams.get(key);
+    }
 }

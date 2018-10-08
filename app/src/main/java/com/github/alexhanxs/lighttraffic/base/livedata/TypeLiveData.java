@@ -6,11 +6,23 @@ import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.HashMap;
+
 /**
  * Created by Alexhanxs on 2018/6/27.
  */
 
 public class TypeLiveData<T extends WrapLiveData> extends MutableLiveData<T> {
+
+    private HashMap<String, Object> requestParams = new HashMap<>();
+
+    @Override
+    public void setValue(T value) {
+        if (value != null) {
+            value.setRequestParams(requestParams);
+        }
+        super.setValue(value);
+    }
 
     @Override
     public void observe(@NonNull LifecycleOwner owner, @NonNull final Observer<T> observer) {
@@ -22,5 +34,13 @@ public class TypeLiveData<T extends WrapLiveData> extends MutableLiveData<T> {
                 }
             }
         });
+    }
+
+    public void setRequestParams(HashMap<String, Object> requestParams) {
+        this.requestParams = requestParams;
+    }
+
+    public Object getRequestParam(String key) {
+        return requestParams.get(key);
     }
 }

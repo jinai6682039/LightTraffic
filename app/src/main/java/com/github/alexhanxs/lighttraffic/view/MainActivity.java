@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.github.alexhanxs.lighttraffic.R;
 import com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData;
 import com.github.alexhanxs.lighttraffic.model.entity.Project;
 import com.github.alexhanxs.lighttraffic.view.base.BaseMvvmActivity;
+import com.github.alexhanxs.lighttraffic.viewmodel.ProjectViewModel;
 import com.github.alexhanxs.lighttraffic.viewmodel.ProjectViewModelSouce;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_
 import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_DATA_LOADING;
 import static com.github.alexhanxs.lighttraffic.base.livedata.WrapLiveData.TYPE_DATA_SUCCESS;
 
-public class MainActivity extends BaseMvvmActivity<ProjectViewModelSouce> {
+public class MainActivity extends BaseMvvmActivity<ProjectViewModel> {
 
     EditText et_search;
     TextView tv_search;
@@ -64,13 +66,13 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModelSouce> {
     }
 
     @Override
-    public Class<ProjectViewModelSouce> getViewModelClass() {
-        return ProjectViewModelSouce.class;
+    public Class<ProjectViewModel> getViewModelClass() {
+        return ProjectViewModel.class;
     }
 
     public void initLiveData() {
         if (getmViewModel() != null) {
-            getmViewModel().getProjectListLiveData().observe(this,
+            getmViewModel().getGetProjectListTypeLiveData().observe(this,
                     new Observer<WrapLiveData<List<Project>>>() {
                         @Override
                         public void onChanged(@Nullable WrapLiveData<List<Project>> listWrapLiveData) {
@@ -78,7 +80,7 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModelSouce> {
                         }
                     });
 
-            getmViewModel().getProjectLiveData().observe(this,
+            getmViewModel().getGetProjectDetailsTypeLiveData().observe(this,
                     new Observer<WrapLiveData<Project>>() {
                         @Override
                         public void onChanged(@Nullable WrapLiveData<Project> projectWrapLiveData) {
@@ -103,6 +105,9 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModelSouce> {
     public void postLiveData(WrapLiveData<List<Project>> listWrapLiveData) {
         switch (listWrapLiveData.type) {
             case TYPE_DATA_SUCCESS:
+
+                Log.e("Test", "userId = " + listWrapLiveData.getRequestParam("userId"));
+
                 projectItemAdapter.addData(listWrapLiveData.data);
                 projectItemAdapter.notifyDataSetChanged();
 
@@ -135,10 +140,10 @@ public class MainActivity extends BaseMvvmActivity<ProjectViewModelSouce> {
     public void postDetailLiveData(WrapLiveData<Project> listWrapLiveData) {
         switch (listWrapLiveData.type) {
             case TYPE_DATA_SUCCESS:
-                if (getmViewModel() != null) {
-                    getmViewModel().setPreLoadedData(listWrapLiveData.data);
-                    getmViewModel().getProjectLiveData().removeObservers(this);
-                }
+//                if (getmViewModel() != null) {
+//                    getmViewModel().setPreLoadedData(listWrapLiveData.data);
+//                    getmViewModel().getProjectLiveData().removeObservers(this);
+//                }
                 break;
 
             case TYPE_DATA_ERROR:

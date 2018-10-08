@@ -1,8 +1,5 @@
 package com.github.jinai6682039.livedata_processor.binder;
 
-import com.github.jinai6682039.livedata_annotation.ObserverMethod;
-import com.github.jinai6682039.livedata_processor.exception.ModelClassCantFindException;
-import com.github.jinai6682039.livedata_processor.exception.WriteJavaFileFailureException;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
