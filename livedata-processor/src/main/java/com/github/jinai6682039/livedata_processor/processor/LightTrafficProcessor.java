@@ -182,7 +182,26 @@ public class LightTrafficProcessor extends AbstractProcessor {
             // 获取完整的参数类型字符串
             if (p.asType() != null) {
                 paramTypeString = p.asType().toString();
+
+                if (paramTypeString.equals("boolean")) {
+                    paramTypeString = "java.lang.Boolean";
+                } else if (paramTypeString.equals("double")) {
+                    paramTypeString = "java.lang.Double";
+                } else if (paramTypeString.equals("float")) {
+                    paramTypeString = "java.lang.Float";
+                } else if (paramTypeString.equals("char")) {
+                    paramTypeString = "java.lang.Character";
+                } else if (paramTypeString.equals("byte")) {
+                    paramTypeString = "java.lang.Byte";
+                } else if (paramTypeString.equals("short")) {
+                    paramTypeString = "java.lang.Short";
+                } else if (paramTypeString.equals("long")) {
+                    paramTypeString = "java.lang.Long";
+                } else if (paramTypeString.equals("int")) {
+                    paramTypeString = "java.lang.Integer";
+                }
             }
+
 
             BindObserverParam param = new BindObserverParam.Builder()
                     .setParamName(paramName)
