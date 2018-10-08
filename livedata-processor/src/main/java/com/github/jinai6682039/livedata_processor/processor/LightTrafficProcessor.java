@@ -36,6 +36,8 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import retrofit2.http.GET;
+
 import static com.google.auto.common.MoreElements.getPackage;
 
 @AutoService(Processor.class)
